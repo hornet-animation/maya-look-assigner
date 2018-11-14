@@ -2,7 +2,7 @@ import sys
 import time
 import logging
 
-import colorbleed.maya.lib as cblib
+import pype.maya.lib as cblib
 
 from avalon import style, io
 from avalon.tools import lib

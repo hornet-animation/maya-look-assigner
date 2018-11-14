@@ -4,7 +4,7 @@ import os
 
 import maya.cmds as cmds
 
-import colorbleed.maya.lib as cblib
+import pype.maya.lib as cblib
 from avalon import io, api
 
 log = logging.getLogger(__name__)
