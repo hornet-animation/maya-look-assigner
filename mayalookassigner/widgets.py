@@ -4,7 +4,7 @@ from collections import defaultdict
 from avalon.vendor.Qt import QtWidgets, QtCore
 
 # TODO: expose this better in avalon core
-from avalon.tools.projectmanager.widget import (
+from avalon.tools.gui.widgets.lib import (
     preserve_selection,
     preserve_expanded_rows
 )

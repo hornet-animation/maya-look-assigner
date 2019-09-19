@@ -1,5 +1,5 @@
 from collections import defaultdict
-from avalon.tools.cbsceneinventory import model
+from avalon.tools.gui import models as model
 
 from avalon.vendor.Qt import QtCore
 from avalon.vendor import qtawesome
