@@ -4,10 +4,7 @@ from collections import defaultdict
 from avalon.vendor.Qt import QtWidgets, QtCore
 
 # TODO: expose this better in avalon core
-from avalon.tools.gui.widgets.lib import (
-    preserve_selection,
-    preserve_expanded_rows
-)
+from avalon.tools import lib
 
 from . import models
 from . import commands
@@ -93,8 +90,8 @@ class AssetOutliner(QtWidgets.QWidget):
     def get_all_assets(self):
         """Add all items from the current scene"""
 
-        with preserve_expanded_rows(self.view):
-            with preserve_selection(self.view):
+        with lib.preserve_expanded_rows(self.view):
+            with lib.preserve_selection(self.view):
                 self.clear()
                 nodes = commands.get_all_asset_nodes()
                 items = commands.create_items_from_nodes(nodes)
@@ -105,8 +102,8 @@ class AssetOutliner(QtWidgets.QWidget):
     def get_selected_assets(self):
         """Add all selected items from the current scene"""
 
-        with preserve_expanded_rows(self.view):
-            with preserve_selection(self.view):
+        with lib.preserve_expanded_rows(self.view):
+            with lib.preserve_selection(self.view):
                 self.clear()
                 nodes = commands.get_selected_nodes()
                 items = commands.create_items_from_nodes(nodes)
