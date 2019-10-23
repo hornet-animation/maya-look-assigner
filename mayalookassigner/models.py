@@ -8,7 +8,7 @@ from avalon.style import colors
 
 class AssetModel(models.TreeModel):
 
-    COLUMNS = ["label"]
+    Columns = ["label"]
 
     def add_items(self, items):
         """
@@ -73,7 +73,7 @@ class AssetModel(models.TreeModel):
 class LookModel(models.TreeModel):
     """Model displaying a list of looks and matches for assets"""
 
-    COLUMNS = ["label", "match"]
+    Columns = ["label", "match"]
 
     def add_items(self, items):
         """Add items to model with needed data
