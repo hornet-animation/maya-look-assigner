@@ -5,6 +5,7 @@ from avalon.vendor.Qt import QtWidgets, QtCore
 
 # TODO: expose this better in avalon core
 from avalon.tools import lib
+from avalon.tools.models import TreeModel
 
 from . import models
 from . import commands
@@ -12,8 +13,6 @@ from . import views
 
 from maya import cmds
 
-
-NODEROLE = QtCore.Qt.UserRole + 1
 MODELINDEX = QtCore.QModelIndex()
 
 
@@ -82,7 +81,7 @@ class AssetOutliner(QtWidgets.QWidget):
         """
 
         selection_model = self.view.selectionModel()
-        items = [row.data(NODEROLE) for row in
+        items = [row.data(TreeModel.ItemRole) for row in
                  selection_model.selectedRows(0)]
 
         return items
@@ -234,7 +233,7 @@ class LookOutliner(QtWidgets.QWidget):
             list: list of dictionaries
         """
 
-        datas = [i.data(NODEROLE) for i in self.view.get_indices()]
+        datas = [i.data(TreeModel.ItemRole) for i in self.view.get_indices()]
         items = [d for d in datas if d is not None]  # filter Nones
 
         return items
