@@ -2,7 +2,10 @@ import sys
 import time
 import logging
 
-import pype.maya.lib as cblib
+try:
+    import pype.maya.lib as cblib
+except Exception:
+    import pype.hosts.maya.lib as cblib
 
 from avalon import style, io
 from avalon.tools import lib

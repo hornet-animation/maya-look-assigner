@@ -4,7 +4,11 @@ import os
 
 import maya.cmds as cmds
 
-import pype.maya.lib as cblib
+try:
+    import pype.maya.lib as cblib
+except Exception:
+    import pype.hosts.maya.lib as cblib
+
 from avalon import io, api
 
 log = logging.getLogger(__name__)
