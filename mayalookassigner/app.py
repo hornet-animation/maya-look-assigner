@@ -3,7 +3,7 @@ import time
 import logging
 
 try:
-    import pype.maya.lib as cblib
+    import pype.hosts.maya.api.lib as cblib
 except Exception:
     import pype.hosts.maya.lib as cblib
 
