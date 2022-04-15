@@ -2,7 +2,12 @@ import sys
 import time
 import logging
 
-import pype.maya.lib as cblib
+try:
+    import pype.maya.lib as cblib
+except Exception:
+    import pype.hosts.maya.lib as cblib
+
+reload(cblib)
 
 from avalon import style, io
 from avalon.tools import lib
@@ -213,6 +218,11 @@ class App(QtWidgets.QWidget):
             # Assign look
             cblib.assign_look_by_version(nodes=item["nodes"],
                                          version_id=version["_id"])
+
+            # Hornet: Put look info in asset container node attrs
+            namespace = item["namespace"]
+            look = subset_name
+            commands.store_look_in_asset_container(namespace, look)
 
         end = time.time()
 
