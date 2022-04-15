@@ -5,7 +5,11 @@ import os
 import maya.cmds as cmds
 
 try:
+<<<<<<< HEAD
     import pype.maya.lib as cblib
+=======
+    import pype.hosts.maya.api.lib as cblib
+>>>>>>> 7adabe8f0e6858bfe5b6bf0b39bd428ed72d0452
 except Exception:
     import pype.hosts.maya.lib as cblib
 
