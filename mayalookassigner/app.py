@@ -219,11 +219,6 @@ class App(QtWidgets.QWidget):
             cblib.assign_look_by_version(nodes=item["nodes"],
                                          version_id=version["_id"])
 
-            # Hornet: Put look info in asset container node attrs
-            namespace = item["namespace"]
-            look = subset_name
-            commands.store_look_in_asset_container(namespace, look)
-
         end = time.time()
 
         self.echo("Finished assigning.. ({0:.3f}s)".format(end - start))

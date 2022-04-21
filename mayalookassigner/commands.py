@@ -192,26 +192,3 @@ def remove_unused_looks():
         api.remove(container)
 
     log.info("Finished removing unused looks. (see log for details)")
-
-
-def store_look_in_asset_container(namespace, look):
-
-    host = api.registered_host()
-
-    for container in host.ls():
-        if namespace == container["namespace"]:
-            container_node = container["objectName"]
-            look_attr_exists = cmds.attributeQuery(
-                "lookAssigned", node=container_node, exists=True
-                )
-            if not look_attr_exists:
-                cmds.addAttr(container_node,
-                longName="lookAssigned", dataType="string")
-
-            # in case for any reason it is locked
-            cmds.setAttr(container_node + '.lookAssigned', lock=False)
-            cmds.setAttr(
-                container_node + ".lookAssigned",
-                look,
-                type="string"
-                )
