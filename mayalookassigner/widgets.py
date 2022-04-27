@@ -38,7 +38,7 @@ class AssetOutliner(QtWidgets.QWidget):
         view.setHeaderHidden(True)
         view.setIndentation(10)
 
-        from_all_asset_btn = QtWidgets.QPushButton("Get All Assets")
+        from_all_asset_btn = QtWidgets.QPushButton("Get All Assets In Scene")
         from_selection_btn = QtWidgets.QPushButton("Get Assets From Selection")
 
         layout.addWidget(title)
@@ -216,9 +216,10 @@ class LookOutliner(QtWidgets.QWidget):
 
         layout.addWidget(title)
         layout.addWidget(view)
-
         self.view = view
         self.model = model
+        styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
+        self.setStyleSheet(styles)
 
     def clear(self):
         self.model.clear()

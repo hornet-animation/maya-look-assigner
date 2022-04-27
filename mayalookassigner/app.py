@@ -28,7 +28,8 @@ class App(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=parent)
-
+        styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
+        self.setStyleSheet(styles)
         self.log = logging.getLogger(__name__)
 
         # Store callback references
@@ -37,7 +38,7 @@ class App(QtWidgets.QWidget):
         filename = commands.get_workfile()
 
         self.setObjectName("lookManager")
-        self.setWindowTitle("Look Manager 1.3.0 - [{}]".format(filename))
+        self.setWindowTitle("Hornet Look Assigner 1.3.0 - [{}]".format(filename))
         self.setWindowFlags(QtCore.Qt.Window)
         self.setParent(parent)
 
@@ -59,13 +60,13 @@ class App(QtWidgets.QWidget):
         """Build the UI"""
 
         # Assets (left)
-        asset_outliner = widgets.AssetOutliner()
+        asset_outliner = widgets.AssetOutliner(self)
 
         # Looks (right)
-        looks_widget = QtWidgets.QWidget()
+        looks_widget = QtWidgets.QWidget(self)
         looks_layout = QtWidgets.QVBoxLayout(looks_widget)
 
-        look_outliner = widgets.LookOutliner()  # Database look overview
+        look_outliner = widgets.LookOutliner(self)  # Database look overview
 
         assign_selected = QtWidgets.QCheckBox("Assign to selected only")
         assign_selected.setToolTip("Whether to assign only to selected nodes "
@@ -77,7 +78,7 @@ class App(QtWidgets.QWidget):
         looks_layout.addWidget(remove_unused_btn)
 
         # Footer
-        status = QtWidgets.QStatusBar()
+        status = QtWidgets.QStatusBar(self)
         status.setSizeGripEnabled(False)
         status.setFixedHeight(25)
         warn_layer = QtWidgets.QLabel("Current Layer is not "
@@ -115,6 +116,9 @@ class App(QtWidgets.QWidget):
         # Buttons
         self.remove_unused = remove_unused_btn
         self.assign_selected = assign_selected
+        for wid in [self.asset_outliner,self.look_outliner,self.status,self.warn_layer,self.remove_unused,self.assign_selected]:
+            styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
+            wid.setStyleSheet(styles)
 
     def setup_connections(self):
         """Connect interactive widgets with actions"""
@@ -165,6 +169,7 @@ class App(QtWidgets.QWidget):
         """Refresh the content"""
 
         # Get all containers and information
+        
         self.asset_outliner.clear()
         found_items = self.asset_outliner.get_all_assets()
         if not found_items:
@@ -246,7 +251,7 @@ def show():
 
     with lib.application():
         window = App(parent=mainwindow)
-        window.setStyleSheet(style.load_stylesheet())
+        #window.setStyleSheet(style.load_stylesheet())
         window.show()
 
         module.window = window
