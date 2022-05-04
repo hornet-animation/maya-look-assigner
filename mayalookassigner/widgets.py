@@ -1,12 +1,13 @@
+from __future__ import print_function
 import logging
+import avalon.io as io
 from collections import defaultdict
-
 from avalon.vendor.Qt import QtWidgets, QtCore
-
 # TODO: expose this better in avalon core
 from avalon.tools import lib
 from avalon.tools.models import TreeModel
-
+from avalon.tools.loader.widgets import ThumbnailWidget
+from avalon.vendor import qtawesome
 from . import models
 from . import commands
 from . import views
@@ -26,24 +27,26 @@ class AssetOutliner(QtWidgets.QWidget):
 
         layout = QtWidgets.QVBoxLayout()
 
-        title = QtWidgets.QLabel("Assets")
+        title = QtWidgets.QLabel("Assets In Scene")
         title.setAlignment(QtCore.Qt.AlignCenter)
         title.setStyleSheet("font-weight: bold; font-size: 12px")
-
         model = models.AssetModel()
         view = views.View()
         view.setModel(model)
         view.customContextMenuRequested.connect(self.right_mouse_menu)
         view.setSortingEnabled(False)
-        view.setHeaderHidden(True)
         view.setIndentation(10)
 
-        from_all_asset_btn = QtWidgets.QPushButton("Get All Assets In Scene")
+        from_all_asset_btn = QtWidgets.QPushButton("Refresh")
         from_selection_btn = QtWidgets.QPushButton("Get Assets From Selection")
+        self.from_selection_box = QtWidgets.QCheckBox("from Selection Only")
+
+        controlsLayout = QtWidgets.QHBoxLayout()
+        controlsLayout.addWidget(from_all_asset_btn)
+        controlsLayout.addWidget(self.from_selection_box)
 
         layout.addWidget(title)
-        layout.addWidget(from_all_asset_btn)
-        layout.addWidget(from_selection_btn)
+        layout.addLayout(controlsLayout)
         layout.addWidget(view)
 
         # Build connections
@@ -52,14 +55,30 @@ class AssetOutliner(QtWidgets.QWidget):
 
         selection_model = view.selectionModel()
         selection_model.selectionChanged.connect(self.selection_changed)
+        selection_model.selectionChanged.connect(self.selectInMaya)
+
 
         self.view = view
         self.model = model
 
         self.setLayout(layout)
-
+        styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
+        self.setStyleSheet(styles)
         self.log = logging.getLogger(__name__)
-
+    def selectInMaya(self):
+        try:
+            dex = self.view.selectedIndexes()[0]
+            obj = dex.model().data(dex,QtCore.Qt.DisplayRole)
+            itm = dex.model().data(dex,TreeModel.ItemRole)
+            if dex.model().hasChildren(dex):
+                for nspace in itm['namespaces']:
+                    cmds.select(nspace + '*:*', add=True)
+            else:
+                cmds.select(obj + '*:*')
+        except ValueError:
+            pass
+        except IndexError:
+            pass
     def clear(self):
         self.model.clear()
 
@@ -85,10 +104,10 @@ class AssetOutliner(QtWidgets.QWidget):
                  selection_model.selectedRows(0)]
 
         return items
-
     def get_all_assets(self):
         """Add all items from the current scene"""
-
+        if self.from_selection_box.isChecked():
+            return self.get_selected_items()
         with lib.preserve_expanded_rows(self.view):
             with lib.preserve_selection(self.view):
                 self.clear()
@@ -110,7 +129,6 @@ class AssetOutliner(QtWidgets.QWidget):
 
     def get_nodes(self, selection=False):
         """Find the nodes in the current scene per asset."""
-
         items = self.get_selected_items()
 
         # Collect all nodes by hash (optimization)
@@ -213,13 +231,26 @@ class LookOutliner(QtWidgets.QWidget):
         view.setToolTip("Use right mouse button menu for direct actions")
         view.customContextMenuRequested.connect(self.right_mouse_menu)
         view.sortByColumn(0, QtCore.Qt.AscendingOrder)
+        view.selectionModel().selectionChanged.connect(lambda x: self.get_selected_entity())
+
+
+        self.thumbWidget = ThumbnailWidget()
 
         layout.addWidget(title)
+        layout.addWidget(self.thumbWidget)
         layout.addWidget(view)
         self.view = view
         self.model = model
         styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
         self.setStyleSheet(styles)
+    def get_selected_entity(self):
+        selectedItems = self.get_selected_items()
+        item = selectedItems[0]
+        thumbEntity = io.find_one({"type": 'thumbnail', 'data.template_data.asset': item['assets'][0]['name'] ,'data.template_data.subset': item['subset'] } )
+        if thumbEntity:
+            self.thumbWidget.set_thumbnail(thumbID=thumbEntity.get('_id'))
+        else:
+            self.thumbWidget.set_thumbnail()
 
     def clear(self):
         self.model.clear()

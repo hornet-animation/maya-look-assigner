@@ -72,9 +72,10 @@ class App(QtWidgets.QWidget):
         assign_selected.setToolTip("Whether to assign only to selected nodes "
                                    "or to the full asset")
         remove_unused_btn = QtWidgets.QPushButton("Remove Unused Looks")
-
+        self.assignButton = QtWidgets.QPushButton('Assign Look')
         looks_layout.addWidget(look_outliner)
         looks_layout.addWidget(assign_selected)
+        looks_layout.addWidget(self.assignButton)
         looks_layout.addWidget(remove_unused_btn)
 
         # Footer
@@ -116,10 +117,11 @@ class App(QtWidgets.QWidget):
         # Buttons
         self.remove_unused = remove_unused_btn
         self.assign_selected = assign_selected
-        for wid in [self.asset_outliner,self.look_outliner,self.status,self.warn_layer,self.remove_unused,self.assign_selected]:
+        asset_outliner.get_all_assets()
+        for wid in [self,self.asset_outliner,self.look_outliner,self.status,self.warn_layer,self.remove_unused,self.assign_selected,self.assignButton]:
             styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
             wid.setStyleSheet(styles)
-
+        self.setStyleSheet('background-color: #171714;')
     def setup_connections(self):
         """Connect interactive widgets with actions"""
 
@@ -130,6 +132,7 @@ class App(QtWidgets.QWidget):
             lambda: self.echo("Loaded assets.."))
 
         self.look_outliner.menu_apply_action.connect(self.on_process_selected)
+        self.assignButton.clicked.connect(self.on_process_selected)
         self.remove_unused.clicked.connect(commands.remove_unused_looks)
 
         # Maya renderlayer switch callback

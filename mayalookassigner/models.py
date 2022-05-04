@@ -8,7 +8,7 @@ from avalon.style import colors
 
 class AssetModel(models.TreeModel):
 
-    Columns = ["label"]
+    Columns = ["label", '_type', 'reference_of']
 
     def add_items(self, items):
         """
@@ -30,6 +30,7 @@ class AssetModel(models.TreeModel):
             asset_item = models.Item()
             asset_item.update(item)
             asset_item["icon"] = "folder"
+            asset_item['_type'] = 'asset'
 
             # Add namespace children
             namespaces = item["namespaces"]
@@ -41,7 +42,9 @@ class AssetModel(models.TreeModel):
                               else "(no namespace)"),
                     "namespace": namespace,
                     "looks": item["looks"],
-                    "icon": "folder-o"
+                    '_type': 'reference',
+                    'reference_of': asset_item['label'],
+                    "icon": "chain"
                 })
                 asset_item.add_child(child)
 

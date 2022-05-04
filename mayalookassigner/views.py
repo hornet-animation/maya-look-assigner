@@ -6,6 +6,7 @@ DEFAULT_COLOR = "#fb9c15"
 
 class View(QtWidgets.QTreeView):
     data_changed = QtCore.Signal()
+    item_selected = QtCore.Signal()
 
     def __init__(self, parent=None):
         super(View, self).__init__(parent=parent)
@@ -15,7 +16,6 @@ class View(QtWidgets.QTreeView):
         self.setSortingEnabled(True)
         self.setSelectionMode(self.ExtendedSelection)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-
     def get_indices(self):
         """Get the selected rows"""
         selection_model = self.selectionModel()
