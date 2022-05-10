@@ -184,6 +184,7 @@ class App(QtWidgets.QWidget):
         items = self.asset_outliner.get_selected_items()
         self.look_outliner.clear()
         self.look_outliner.add_items(items)
+        self.look_outliner.thumbWidget.set_thumbnail()
 
     def on_process_selected(self):
         """Process all selected looks for the selected assets"""

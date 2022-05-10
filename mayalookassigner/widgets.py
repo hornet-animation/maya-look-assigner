@@ -70,6 +70,7 @@ class AssetOutliner(QtWidgets.QWidget):
             dex = self.view.selectedIndexes()[0]
             obj = dex.model().data(dex,QtCore.Qt.DisplayRole)
             itm = dex.model().data(dex,TreeModel.ItemRole)
+            cmds.select(clear=True)
             if dex.model().hasChildren(dex):
                 for nspace in itm['namespaces']:
                     cmds.select(nspace + '*:*', add=True)
@@ -243,9 +244,15 @@ class LookOutliner(QtWidgets.QWidget):
         self.model = model
         styles = open('T:\dev\experimental\hornet-apps\hornet_style\hornet.css').read()
         self.setStyleSheet(styles)
+        self.thumbWidget.set_thumbnail()
     def get_selected_entity(self):
         selectedItems = self.get_selected_items()
-        item = selectedItems[0]
+        print(self.parent())
+        if len(selectedItems) > 0:
+            item = selectedItems[0]
+        else:
+            self.thumbWidget.set_thumbnail()
+            return
         thumbEntity = io.find_one({"type": 'thumbnail', 'data.template_data.asset': item['assets'][0]['name'] ,'data.template_data.subset': item['subset'] } )
         if thumbEntity:
             self.thumbWidget.set_thumbnail(thumbID=thumbEntity.get('_id'))
